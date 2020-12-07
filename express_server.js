@@ -12,20 +12,25 @@ const urlDatabase = {
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
-
+// all urls rendered in table
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase};
   res.render('urls_index.ejs', templateVars);
 });
-
+// form to add a new url
+app.get("/urls/new", (req, res) => {
+  res.render("urls_new");
+});
+// specific url
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
+
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
 
 app.get("/hello", (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
