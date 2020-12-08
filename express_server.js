@@ -22,14 +22,16 @@ const urlDatabase = {
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
+
 // all urls rendered in table
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase};
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"]};
   res.render('urls_index.ejs', templateVars);
 });
 // get form to add a new url
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { username: req.cookies["username"] }
+  res.render("urls_new", templateVars);
 });
 // post url data from form
 app.post("/urls", (req, res) => {
@@ -48,7 +50,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 // specific url
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
@@ -67,15 +69,15 @@ app.post("/urls/:shortURL", (req, res) => {
   res.redirect("/urls");
 })
 
-// logging in functionality
+// logging in functionality / setting cookie
+app.post("/login", (req, res) => {
+  const username = req.body.username
+  res.cookie('username', username);
+  res.redirect("/urls");
+})
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
-});
+// logging out functionality / clear cookie
 
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
