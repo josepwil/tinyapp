@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080; // default port 8080
 
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 // function to generate random string
@@ -54,7 +57,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
   delete urlDatabase[shortURL];
   res.redirect("/urls");
-
 })
 
 // edit url in dataBase 
@@ -64,6 +66,8 @@ app.post("/urls/:shortURL", (req, res) => {
   urlDatabase[shortURL] = newLongURL;
   res.redirect("/urls");
 })
+
+// logging in functionality
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
