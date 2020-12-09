@@ -119,8 +119,19 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // logging in functionality / setting cookie
 app.post("/login", (req, res) => {
-  const username = req.body.username
-  res.cookie("username", username);
+  const email = req.body.email;
+  const password = req.body.password;
+  const userInfo = lookUp(users, email)
+
+  if(!userInfo) {
+    return res.send("User with that email does not exist", 403);
+  }
+
+  if(password !== userInfo.password) {
+    return res.send("Password is incorrect");
+  }
+
+  res.cookie("user_id", userInfo.id);
   res.redirect("/urls");
 })
 
