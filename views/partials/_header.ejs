@@ -15,10 +15,10 @@
             <button class="btn btn-outline-dark" type="submit">Logout</button>
           </form>
           <% } else { %>
-            <form method="POST" action="/login" class="form-inline ml-auto">
-              <input class="form-control mr-sm-2" name="username" type="input" placeholder="Username">
-              <button class="btn btn-outline-dark" type="submit">Login</button>
-            </form>
+            <div class="ml-auto">
+              <a href="/login"><button class="btn btn-outline-dark" type="button">Login</button></a>
+              <a href="/register"><button class="btn btn-outline-dark" type="button">Register</button></a>
+            </div>
           <% } %>
       
     </div>

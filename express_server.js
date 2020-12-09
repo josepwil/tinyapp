@@ -9,11 +9,26 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
 
+
+// ***************** Helper Functions *****************
+
 // function to generate random string
 const generateRandomString = () => {
   return Math.random().toString(36).slice(2, 8);
 }
 
+// function to look up item in database
+const lookUp = (obj, item) => {
+  for (const key in obj) {
+    if (Object.values(obj[key]).includes(item)) {
+      return obj[key];
+    }
+  }
+	return false;
+ }
+ 
+
+// ************* Databases ***************************
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
@@ -68,7 +83,13 @@ app.get("/register", (req, res) => {
   const activeUser = req.cookies["user_id"];
   const templateVars = { user: users[activeUser] };
   res.render("user_registration", templateVars);
-})
+});
+
+app.get("/login", (req, res) => {
+  const activeUser = req.cookies["user_id"];
+  const templateVars = { user: users[activeUser] };
+  res.render("user_login", templateVars)
+});
 
 // ***************** POST REQUESTS *****************************
 
@@ -114,6 +135,18 @@ app.post("/register", (req, res) => {
   const userId = generateRandomString();
   const email = req.body.email;
   const password = req.body.password;
+
+  if (!email) {
+    return res.send("Please enter email", 404);
+  }
+
+  if(!password) {
+    return res.send("Please enter password", 404);
+  }
+
+  if(lookUp(users, email)) {
+    return res.send("User already exists", 404);
+  }
 
   const newUser = {
     userId, 
