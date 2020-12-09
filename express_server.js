@@ -18,28 +18,20 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
+// ***************** GET REQUESTS *****************************
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
 // all urls rendered in table
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"]};
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render('urls_index.ejs', templateVars);
 });
 // get form to add a new url
 app.get("/urls/new", (req, res) => {
-  const templateVars = { username: req.cookies["username"] }
+  const templateVars = { username: req.cookies["username"] };
   res.render("urls_new", templateVars);
-});
-// post url data from form
-app.post("/urls", (req, res) => {
-  const longURL = req.body.longURL;
-  const shortURL = generateRandomString(); 
-  // saves shortURL-longURL to urlDatabase
-  urlDatabase[shortURL] = longURL;
-  res.redirect(`/urls/${shortURL}`);
 });
 
 // redirect short url
@@ -52,6 +44,22 @@ app.get("/u/:shortURL", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies["username"] };
   res.render("urls_show", templateVars);
+});
+
+app.get("/register", (req, res) => {
+  const templateVars = { username: req.cookies["username"] };
+  res.render("user_registration", templateVars);
+})
+
+// ***************** POST REQUESTS *****************************
+
+// post url data from form
+app.post("/urls", (req, res) => {
+  const longURL = req.body.longURL;
+  const shortURL = generateRandomString(); 
+  // saves shortURL-longURL to urlDatabase
+  urlDatabase[shortURL] = longURL;
+  res.redirect(`/urls/${shortURL}`);
 });
 
 // remove url from urlDatabase
