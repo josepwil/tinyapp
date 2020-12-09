@@ -77,6 +77,10 @@ app.post("/login", (req, res) => {
 })
 
 // logging out functionality / clear cookie
+app.post("/logout", (req, res) => {
+  res.clearCookie("username");
+  res.redirect("urls");
+})
 
 
 app.listen(PORT, () => {
