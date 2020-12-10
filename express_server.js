@@ -146,7 +146,7 @@ app.post("/urls/:id/delete", (req, res) => {
   const activeUser = req.cookies["user_id"];
   const activeUserURLs = urlsForUser(activeUser);
   const shortURL = req.params.id;
-
+  // check url belongs to active user
   if(!lookUp(activeUserURLs, shortURL)) {
     return res.status(401).send("You do not have permission to access this page");
   }
@@ -159,7 +159,7 @@ app.post("/urls/:id", (req, res) => {
   const activeUser = req.cookies["user_id"];
   const activeUserURLs = urlsForUser(activeUser);
   const shortURL = req.params.id;
-
+  // check url belongs to active user
   if(!lookUp(activeUserURLs, shortURL)) {
     return res.status(401).send("You do not have permission to access this page");
   }
@@ -174,6 +174,7 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const userInfo = lookUp(users, email)
+  console.log(userInfo);
 
   if(!userInfo) {
     return res.send("User with that email does not exist", 403);
@@ -183,7 +184,7 @@ app.post("/login", (req, res) => {
     return res.send("Password is incorrect");
   }
 
-  res.cookie("user_id", userInfo.id);
+  res.cookie("user_id", userInfo.userId);
   res.redirect("/urls");
 })
 
