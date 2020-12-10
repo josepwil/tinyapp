@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcrypt");
+const { lookUp, generateRandomString, urlsForUser } = require("./helpers")
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -13,47 +14,13 @@ app.use(cookieSession({
 }));
 app.set('view engine', 'ejs');
 
-
-// ***************** Helper Functions *****************
-
-// function to generate random string
-const generateRandomString = () => {
-  return Math.random().toString(36).slice(2, 8);
-}
-
-// function to look up item in database
-const lookUp = (obj, item) => {
-  for (const key in obj) {
-    if (Object.values(obj[key]).includes(item)) {
-      return obj[key];
-    }
-  }
-	return false;
- }
-
- const urlsForUser = (id) => {
-  const activeUserURLs = {}
-  for (const key in urlDatabase) {
-    if (id === urlDatabase[key].userID) {
-      activeUserURLs[key] = urlDatabase[key];
-    } 
-  }
-  return activeUserURLs;
- }
  
-
 // ************* Databases ***************************
 const urlDatabase = {
   // b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   // i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
-/*
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
-*/
 
 const users = { 
 //   "userRandomID": {
@@ -77,7 +44,7 @@ app.get("/", (req, res) => {
 // all urls rendered in table
 app.get("/urls", (req, res) => {
   const activeUser = req.session.user_id;
-  const activeUserURLs = urlsForUser(activeUser);
+  const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   
   const templateVars = { urls: activeUserURLs, user: users[activeUser] };
 
@@ -104,7 +71,7 @@ app.get("/u/:shortURL", (req, res) => {
 // specific url
 app.get("/urls/:id", (req, res) => {
   const activeUser = req.session.user_id;
-  const activeUserURLs = urlsForUser(activeUser);
+  const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   const shortURL = req.params.id;
   // check user has this url in their personal db
   if (!activeUserURLs[shortURL]) {
@@ -148,7 +115,7 @@ app.post("/urls", (req, res) => {
 // remove url from urlDatabase
 app.post("/urls/:id/delete", (req, res) => {
   const activeUser = req.session.user_id;
-  const activeUserURLs = urlsForUser(activeUser);
+  const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   const shortURL = req.params.id;
   // check url belongs to active user
   if(!lookUp(activeUserURLs, activeUser)) {
@@ -161,7 +128,7 @@ app.post("/urls/:id/delete", (req, res) => {
 // edit url in dataBase 
 app.post("/urls/:id", (req, res) => {
   const activeUser = req.session.user_id;
-  const activeUserURLs = urlsForUser(activeUser);
+  const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   const shortURL = req.params.id;
   // check url belongs to active user
   if(!lookUp(activeUserURLs, activeUser)) {
