@@ -29,7 +29,7 @@
       <tbody>
         <% for(let url in urls) { %>
           <tr>
-            <form method="POST" action="/urls/<%= url %>/delete">
+            <form method="POST" action="/urls/<%= url %>/delete?_method=DELETE">
               <td><%= url %></td>
               <td><%= urls[url].longURL %></td>
               <td><a href="/urls/<%= url %>" class="btn btn-outline-primary">Edit</a></td>

@@ -2,12 +2,14 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcrypt");
+const methodOverride = require('method-override');
 const { lookUp, generateRandomString, urlsForUser } = require("./helpers");
 const app = express();
 const PORT = 8080; // default port 8080
 
 
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride('_method'))
 app.use(cookieSession({
   name: 'session',
   keys: ['dsfghs']
@@ -107,7 +109,7 @@ app.post("/urls", (req, res) => {
 
 
 // remove url from urlDatabase
-app.post("/urls/:id/delete", (req, res) => {
+app.delete("/urls/:id/delete", (req, res) => {
   const activeUser = req.session.user_id;
   const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   const shortURL = req.params.id;
@@ -120,7 +122,7 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 // edit url in dataBase
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   const activeUser = req.session.user_id;
   const activeUserURLs = urlsForUser(activeUser, urlDatabase);
   const shortURL = req.params.id;
