@@ -4,13 +4,13 @@ const { lookUp, urlsForUser } = require('../helpers.js');
 
 const testUsers = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
   "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   }
 };
@@ -33,16 +33,16 @@ describe('lookUp', function() {
   it('should return undefinded when we pass in an item that is not in our database', function() {
     const user = lookUp(testUsers, "randomUser@example.com");
     assert.isUndefined(user);
-  })
+  });
 });
 
 describe('urlsForUser', function() {
   it('should return an object containing the users urls based on id', function() {
-    const usersURLs = urlsForUser("user2RandomID", testDatabase) 
+    const usersURLs = urlsForUser("user2RandomID", testDatabase);
     const expectedOutput = {
-    i456: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
-    i457: { longURL: "https://www.google.ca", userID: "user2RandomID" }
-    }
+      i456: { longURL: "https://www.tsn.ca", userID: "user2RandomID" },
+      i457: { longURL: "https://www.google.ca", userID: "user2RandomID" }
+    };
     assert.deepEqual(usersURLs, expectedOutput);
   });
 
