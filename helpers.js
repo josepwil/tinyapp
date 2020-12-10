@@ -5,7 +5,7 @@ const lookUp = (database, item) => {
       return database[key];
     }
   }
-	return false;
+	return undefined;
  }
 
 // function to generate random string
