@@ -26,12 +26,22 @@ const lookUp = (obj, item) => {
   }
 	return false;
  }
+
+ const urlsForUser = (id) => {
+  const activeUserURLs = {}
+  for (const key in urlDatabase) {
+    if (id === urlDatabase[key].userID) {
+      activeUserURLs[key] = urlDatabase[key];
+    } 
+  }
+  return activeUserURLs;
+ }
  
 
 // ************* Databases ***************************
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  // b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  // i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
 };
 
 /*
@@ -42,16 +52,16 @@ const urlDatabase = {
 */
 
 const users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"
-  }
+//   "userRandomID": {
+//     id: "userRandomID", 
+//     email: "user@example.com", 
+//     password: "purple-monkey-dinosaur"
+//   },
+//  "user2RandomID": {
+//     id: "user2RandomID", 
+//     email: "user2@example.com", 
+//     password: "dishwasher-funk"
+//   }
 }
 
 
@@ -63,7 +73,9 @@ app.get("/", (req, res) => {
 // all urls rendered in table
 app.get("/urls", (req, res) => {
   const activeUser = req.cookies["user_id"];
-  const templateVars = { urls: urlDatabase, user: users[activeUser] };
+  const activeUserURLs = urlsForUser(activeUser);
+  
+  const templateVars = { urls: activeUserURLs, user: users[activeUser] };
 
   res.render('urls_index.ejs', templateVars);
 });
@@ -86,9 +98,17 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 // specific url
-app.get("/urls/:shortURL", (req, res) => {
+app.get("/urls/:id", (req, res) => {
   const activeUser = req.cookies["user_id"];
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[activeUser] };
+  const activeUserURLs = urlsForUser(activeUser);
+  const shortURL = req.params.id;
+  // check user has this url in their personal db
+  if (!activeUserURLs[shortURL]) {
+    return res.status(401).send("You do not have permission to access this page");
+  }
+  const longURL = activeUserURLs[shortURL].longURL;
+  const user = users[activeUser];
+  const templateVars = { shortURL, longURL, user};
   res.render("urls_show", templateVars);
 });
 
@@ -117,20 +137,33 @@ app.post("/urls", (req, res) => {
     userID
   }
   urlDatabase[shortURL] = newURL;
-  console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
 
+
 // remove url from urlDatabase
-app.post("/urls/:shortURL/delete", (req, res) => {
-  const shortURL = req.params.shortURL;
+app.post("/urls/:id/delete", (req, res) => {
+  const activeUser = req.cookies["user_id"];
+  const activeUserURLs = urlsForUser(activeUser);
+  const shortURL = req.params.id;
+
+  if(!lookUp(activeUserURLs, shortURL)) {
+    return res.status(401).send("You do not have permission to access this page");
+  }
   delete urlDatabase[shortURL];
   res.redirect("/urls");
 })
 
 // edit url in dataBase 
-app.post("/urls/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL;
+app.post("/urls/:id", (req, res) => {
+  const activeUser = req.cookies["user_id"];
+  const activeUserURLs = urlsForUser(activeUser);
+  const shortURL = req.params.id;
+
+  if(!lookUp(activeUserURLs, shortURL)) {
+    return res.status(401).send("You do not have permission to access this page");
+  }
+
   const newLongURL = req.body.longURL;
   urlDatabase[shortURL].longURL = newLongURL;
   res.redirect("/urls");
