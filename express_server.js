@@ -147,7 +147,7 @@ app.post("/urls/:id/delete", (req, res) => {
   const activeUserURLs = urlsForUser(activeUser);
   const shortURL = req.params.id;
   // check url belongs to active user
-  if(!lookUp(activeUserURLs, shortURL)) {
+  if(!lookUp(activeUserURLs, activeUser)) {
     return res.status(401).send("You do not have permission to access this page");
   }
   delete urlDatabase[shortURL];
@@ -160,7 +160,7 @@ app.post("/urls/:id", (req, res) => {
   const activeUserURLs = urlsForUser(activeUser);
   const shortURL = req.params.id;
   // check url belongs to active user
-  if(!lookUp(activeUserURLs, shortURL)) {
+  if(!lookUp(activeUserURLs, activeUser)) {
     return res.status(401).send("You do not have permission to access this page");
   }
 
