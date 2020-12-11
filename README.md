@@ -5,6 +5,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 ## Final Product
 
 !["Screenshot of URLs page"](https://github.com/josepwil/tinyapp/blob/master/docs/urls-page.png?raw=true)
+!["screenshot edit URL page with analytics"](https://github.com/josepwil/tinyapp/blob/master/docs/new-url-page.png?raw=true)
 !["screenshot new URL page"](https://github.com/josepwil/tinyapp/blob/master/docs/new-url-page.png?raw=true)
 !["screenshot of registration page"](https://github.com/josepwil/tinyapp/blob/master/docs/registration-page.png?raw=true)
 
@@ -16,6 +17,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 - bcrypt
 - body-parser
 - cookie-session
+- method-override
 
 ## Getting Started
 
