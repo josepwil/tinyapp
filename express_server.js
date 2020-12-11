@@ -9,7 +9,7 @@ const PORT = 8080; // default port 8080
 
 
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(methodOverride('_method'))
+app.use(methodOverride('_method'));
 app.use(cookieSession({
   name: 'session',
   keys: ['dsfghs']
@@ -56,30 +56,30 @@ app.get("/urls/new", (req, res) => {
 
 // redirect short url
 app.get("/u/:shortURL", (req, res) => {
-  const shortURL = req.params.shortURL
+  const shortURL = req.params.shortURL;
   // if not logged in
   let visitorID;
   if (!req.session.visitor_id) {
     visitorID = generateRandomString();
-    req.session.visitor_id = visitorID
+    req.session.visitor_id = visitorID;
   } else {
-    visitorID = req.session.visitor_id
+    visitorID = req.session.visitor_id;
   }
   // if it doesn't exist in our analytics database create new instance
   if (!analytics[shortURL]) {
     const urlAnalytics = createURLAnalytics(shortURL, visitorID);
     analytics[shortURL] = urlAnalytics;
   } else {
-      // if it exisits 
-      const visitData = analytics[shortURL].visits;
-      // check for new visitor
-      if (!visitData.visitorIDs.includes(visitorID)) {
-        visitData.uniqueVisitors++;
-      }
-      // update other values
-      visitData.totalVisits++;
-      visitData.timestamps.push(new Date(Date.now()).toString());
-      visitData.visitorIDs.push(visitorID);
+    // if it exisits
+    const visitData = analytics[shortURL].visits;
+    // check for new visitor
+    if (!visitData.visitorIDs.includes(visitorID)) {
+      visitData.uniqueVisitors++;
+    }
+    // update other values
+    visitData.totalVisits++;
+    visitData.timestamps.push(new Date(Date.now()).toString());
+    visitData.visitorIDs.push(visitorID);
   }
   // redirect to long url
   const longURL = urlDatabase[shortURL].longURL;

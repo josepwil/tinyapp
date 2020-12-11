@@ -34,8 +34,8 @@ const createURLAnalytics = (shortURL, visitorID) => {
       visitorIDs: [ visitorID ],
       uniqueVisitors: 1
     }
-  }
-}
+  };
+};
 
 
 module.exports = { lookUp, generateRandomString, urlsForUser, createURLAnalytics };
