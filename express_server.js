@@ -57,6 +57,11 @@ app.get("/urls/new", (req, res) => {
 // redirect short url
 app.get("/u/:shortURL", (req, res) => {
   const shortURL = req.params.shortURL;
+
+  // if the url doesn't exist 
+  if(!urlDatabase[shortURL]) {
+    return res.status(404).send("Page not found")
+  }
   // if not logged in
   let visitorID;
   if (!req.session.visitor_id) {
