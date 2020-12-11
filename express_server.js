@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require("bcrypt");
 const methodOverride = require('method-override');
-const { lookUp, generateRandomString, urlsForUser } = require("./helpers");
+const { lookUp, generateRandomString, urlsForUser, createURLAnalytics } = require("./helpers");
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -22,6 +22,8 @@ const urlDatabase = {};
 
 
 const users = {};
+
+const analytics = {};
 
 
 // ***************** GET REQUESTS *****************************
@@ -54,7 +56,33 @@ app.get("/urls/new", (req, res) => {
 
 // redirect short url
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL].longURL;
+  const shortURL = req.params.shortURL
+  // if not logged in
+  let visitorID;
+  if (!req.session.visitor_id) {
+    visitorID = generateRandomString();
+    req.session.visitor_id = visitorID
+  } else {
+    visitorID = req.session.visitor_id
+  }
+  // if it doesn't exist in our analytics database create new instance
+  if (!analytics[shortURL]) {
+    const urlAnalytics = createURLAnalytics(shortURL, visitorID);
+    analytics[shortURL] = urlAnalytics;
+  } else {
+      // if it exisits 
+      const visitData = analytics[shortURL].visits;
+      // check for new visitor
+      if (!visitData.visitorIDs.includes(visitorID)) {
+        visitData.uniqueVisitors++;
+      }
+      // update other values
+      visitData.totalVisits++;
+      visitData.timestamps.push(new Date(Date.now()).toString());
+      visitData.visitorIDs.push(visitorID);
+  }
+  // redirect to long url
+  const longURL = urlDatabase[shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -69,7 +97,8 @@ app.get("/urls/:id", (req, res) => {
   }
   const longURL = activeUserURLs[shortURL].longURL;
   const user = users[activeUser];
-  const templateVars = { shortURL, longURL, user};
+  const urlAnalytics = analytics[shortURL] || undefined;
+  const templateVars = { shortURL, longURL, user, urlAnalytics};
   res.render("urls_show", templateVars);
 });
 

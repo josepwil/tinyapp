@@ -14,10 +14,13 @@
   <% if (!user) { %>
     <h3>Please Register or Login</h3>
   <% } else { %> 
-  <div class="card text-center">
+  <div class="card text-center mb-4">
       <div class="card-header"></div>
       <div class="card-body">
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
+        <% if (urlAnalytics) { %> 
+        <h6 class="card-title">(Total Visits: <%= urlAnalytics.visits.totalVisits %>, Unique Visits <%= urlAnalytics.visits.uniqueVisitors %> )</h6>
+        <% } %>
         <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
       </div>
     <div class="card-footer text-muted">
@@ -31,6 +34,45 @@
       </form>
     </div>
   </div>
+
+  <% if (urlAnalytics) { %>
+    <div class="card text-center m-auto" style="width: 60%;">
+      <div class="card-header"></div>
+      <div class="card-body">
+        <div class="m-2 mb-4">
+         <h4>Visitor Information</h4>
+        </div>
+
+        <div class="m-auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Visitor ID</th>
+                <th scope="col">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(let i = 0; i < urlAnalytics.visits.visitorIDs.length; i++) { %>
+                <tr>
+                    <td><%= urlAnalytics.visits.visitorIDs[i] %></td>
+                    <td><%= urlAnalytics.visits.timestamps[i] %></td
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+
+      </div>
+    <div class="card-footer text-muted">
+    </div>
+  </div>
+  <% } %> 
+
+
+
+
+
   <% } %>
   
   <!-- Bootstrap JS -->

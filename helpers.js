@@ -25,5 +25,17 @@ const urlsForUser = (id, urlDatabase) => {
   return activeUserURLs;
 };
 
+const createURLAnalytics = (shortURL, visitorID) => {
+  return {
+    shortURL,
+    visits: {
+      totalVisits: 1,
+      timestamps: [ new Date(Date.now()).toString() ],
+      visitorIDs: [ visitorID ],
+      uniqueVisitors: 1
+    }
+  }
+}
 
-module.exports = { lookUp, generateRandomString, urlsForUser };
+
+module.exports = { lookUp, generateRandomString, urlsForUser, createURLAnalytics };
