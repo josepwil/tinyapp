@@ -9,7 +9,7 @@ URLs page:
 
 
 Edit URL page with analytics:
-!["screenshot of edit URL page with analytics"](https://github.com/josepwil/tinyapp/blob/master/docs/url-edit-analytics.png?raw=true)
+!["screenshot of edit URL page with analytics"](https://github.com/josepwil/tinyapp/blob/master/docs/edit-url-analytics.png?raw=true)
 
 
 New URL page:
